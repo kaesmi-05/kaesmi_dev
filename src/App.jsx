@@ -228,7 +228,7 @@ function App() {
         </section>
 
         {/* Секция портфолио */}
-        <section id="portfolio" className="portfolio">
+        {/* <section id="portfolio" className="portfolio">
           <div className="container portfolio-container">
             <h2 className="section-title">Мои работы</h2>
             <p className="section-subtitle">Примеры реализованных проектов</p>
@@ -251,14 +251,14 @@ function App() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Секция "Обо мне" */}
-        <section id="about" className="about">
+        {/* <section id="about" className="about">
           <div className="container about-container">
             <div className="about-content">
               <h2 className="section-title">Обо мне</h2>
-              <p className="about-description">Я профессиональный веб-разработчик с 5-летним опытом создания сайтов различной сложности. Специализируюсь на разработке современных, адаптивных и высокопроизводительных веб-приложений.</p>
+              <p className="about-description">Я профессиональный веб-разработчик создания сайтов различной сложности. Специализируюсь на разработке современных, адаптивных и высокопроизводительных веб-приложений.</p>
               
               <div className="skills">
                 <div className="skill">
@@ -267,11 +267,11 @@ function App() {
                 </div>
                 <div className="skill">
                   <h4>Дизайн и UX/UI</h4>
-                  <p>Адаптивный дизайн, Figma, Adobe XD, пользовательские интерфейсы</p>
+                  <p>Адаптивный дизайн, Figma, пользовательские интерфейсы</p>
                 </div>
                 <div className="skill">
                   <h4>Дополнительные технологии</h4>
-                  <p>Git, Webpack, REST API, Node.js, MongoDB, Firebase</p>
+                  <p>Git, REST API, Node.js, MongoDB, Firebase</p>
                 </div>
               </div>
               
@@ -291,7 +291,7 @@ function App() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Секция контактов */}
         <section id="contact" className="contact">
