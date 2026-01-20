@@ -306,29 +306,29 @@ function App() {
                   <div className="contact-icon">📧</div>
                   <div>
                     <h4>Email</h4>
-                    <p>hello@webdevpro.kz</p>
+                    <p>kaesmi05@outlook.com</p>
                   </div>
                 </div>
                 <div className="contact-item">
                   <div className="contact-icon">📱</div>
                   <div>
                     <h4>Телефон</h4>
-                    <p>+7 (777) 123-45-67</p>
+                    <p>+7 (705) 580-64-42</p>
                   </div>
                 </div>
-                <div className="contact-item">
+                {/* <div className="contact-item">
                   <div className="contact-icon">📍</div>
                   <div>
                     <h4>Локация</h4>
                     <p>Алматы, Казахстан</p>
                     <p className="location-subtext">Работаю с клиентами по всему миру</p>
                   </div>
-                </div>
+                </div> */}
                 
-                <div className="currency-note">
+                {/* <div className="currency-note">
                   <h4>Международные клиенты</h4>
                   <p>Принимаю оплату в разных валютах. Используйте переключатель валют в разделе услуг.</p>
-                </div>
+                </div> */}
               </div>
               
               <div className="contact-form">
@@ -385,10 +385,10 @@ function App() {
       <footer className="footer">
         <div className="container footer-container">
           <div className="footer-content">
-            <div className="logo-footer">
-              {/* <span className="logo-text">WebDev Pro</span> */}
+            {/* <div className="logo-footer">
+              <span className="logo-text">WebDev Pro</span>
               <p>Профессиональная разработка сайтов</p>
-            </div>
+            </div> */}
             
             <div className="footer-links">
               <h4>Услуги</h4>
