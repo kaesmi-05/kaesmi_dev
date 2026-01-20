@@ -97,9 +97,9 @@ function App() {
       {/* Шапка сайта */}
       <header className="header">
         <div className="container header-container">
-          <div className="logo">
+          {/* <div className="logo">
             <span className="logo-text">WebDev Pro</span>
-          </div>
+          </div> */}
           
           <button className="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? '✕' : '☰'}
@@ -386,7 +386,7 @@ function App() {
         <div className="container footer-container">
           <div className="footer-content">
             <div className="logo-footer">
-              <span className="logo-text">WebDev Pro</span>
+              {/* <span className="logo-text">WebDev Pro</span> */}
               <p>Профессиональная разработка сайтов</p>
             </div>
             
@@ -400,20 +400,20 @@ function App() {
             
             <div className="footer-contact">
               <h4>Контакты</h4>
-              <p>hello@webdevpro.kz</p>
-              <p>+7 (777) 123-45-67</p>
-              <div className="social-links">
+              <p>kaesmi05@outlook.com</p>
+              <p>+7 (705) 580-64-42</p>
+              {/* <div className="social-links">
                 <a href="#" className="social-link">Instagram</a>
                 <a href="#" className="social-link">LinkedIn</a>
                 <a href="#" className="social-link">GitHub</a>
-              </div>
+              </div> */}
             </div>
           </div>
           
-          <div className="footer-bottom">
+          {/* <div className="footer-bottom">
             <p>&copy; {new Date().getFullYear()} WebDev Pro. Все права защищены.</p>
             <p className="currency-disclaimer">Курсы валют: USD ≈ 0.0021, EUR ≈ 0.0019, RUB ≈ 0.18</p>
-          </div>
+          </div> */}
         </div>
       </footer>
     </div>
