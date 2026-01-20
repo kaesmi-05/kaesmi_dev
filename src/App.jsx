@@ -4,11 +4,9 @@ import './App.css';
 function App() {
   const [activeService, setActiveService] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [converterOpen, setConverterOpen] = useState(false);
-  const [tengeAmount, setTengeAmount] = useState(20000);
-  const [convertedAmount, setConvertedAmount] = useState({});
-  const [currency, setCurrency] = useState('USD');
+  const [currency, setCurrency] = useState('KZT');
   const [exchangeRates, setExchangeRates] = useState({
+    KZT: 1,
     USD: 0.0021,
     EUR: 0.0019,
     RUB: 0.18,
@@ -19,37 +17,31 @@ function App() {
     {
       id: 0,
       title: "Одностраничный сайт (Landing Page)",
-      shortTitle: "Landing Page",
       description: "Современный одностраничный сайт для продвижения продукта или услуги. Оптимизирован для конверсии, адаптирован под все устройства.",
-      price: "20 000 тг",
-      priceValue: 20000,
+      basePrice: 20000,
       features: ["Адаптивный дизайн", "Оптимизация под SEO", "Форма обратной связи", "Интеграция с соцсетями", "Аналитика посещений"]
     },
     {
       id: 1,
       title: "Сайт-визитка",
-      shortTitle: "Сайт-визитка",
       description: "Классический сайт-визитка для представления вас или вашего бизнеса в интернете. Несколько страниц с основной информацией.",
-      price: "20 000 тг",
-      priceValue: 20000,
+      basePrice: 20000,
       features: ["До 5 страниц", "Адаптивный дизайн", "Галерея работ", "Контакты и карта", "Базовое SEO"]
     },
     {
       id: 2,
       title: "Корпоративный сайт",
-      shortTitle: "Корпоративный",
       description: "Полнофункциональный сайт для компании с системой управления контентом, новостным разделом и каталогом продукции.",
-      price: "от 100 000 тг",
-      priceValue: 100000,
+      basePrice: 100000,
+      isFrom: true,
       features: ["Индивидуальный дизайн", "Система управления (CMS)", "Многостраничная структура", "Новостной блог", "Админ-панель"]
     },
     {
       id: 3,
       title: "Интернет-магазин",
-      shortTitle: "Интернет-магазин",
       description: "Полноценная платформа для онлайн-продаж с каталогом товаров, корзиной, системой оплаты и личным кабинетом покупателя.",
-      price: "от 100 000 тг",
-      priceValue: 100000,
+      basePrice: 100000,
+      isFrom: true,
       features: ["Каталог товаров", "Корзина и оформление заказа", "Система оплаты", "Личный кабинет", "Управление заказами"]
     }
   ];
@@ -63,23 +55,27 @@ function App() {
     { id: 6, title: "Лендинг для стартапа", category: "Landing Page", image: "startup.jpg" },
   ];
 
-  // Конвертация валют
-  useEffect(() => {
-    const converted = {};
-    Object.keys(exchangeRates).forEach(key => {
-      converted[key] = (tengeAmount * exchangeRates[key]).toFixed(2);
+  // Форматирование цены
+  const formatPrice = (price, currencyCode) => {
+    const convertedPrice = price * exchangeRates[currencyCode];
+    const currencySymbols = {
+      KZT: 'тг',
+      USD: '$',
+      EUR: '€',
+      RUB: '₽',
+      UAH: '₴'
+    };
+    
+    const formattedPrice = convertedPrice.toLocaleString('ru-RU', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     });
-    setConvertedAmount(converted);
-  }, [tengeAmount, exchangeRates]);
-
-  const handleTengeChange = (e) => {
-    const value = parseInt(e.target.value) || 0;
-    setTengeAmount(value);
+    
+    return `${services[activeService].isFrom && currencyCode !== 'KZT' ? 'от ' : ''}${formattedPrice} ${currencySymbols[currencyCode]}`;
   };
 
   const handleServiceClick = (id) => {
     setActiveService(id);
-    setTengeAmount(services[id].priceValue);
   };
 
   const handleContactSubmit = (e) => {
@@ -114,117 +110,9 @@ function App() {
             <a href="#portfolio" onClick={(e) => { e.preventDefault(); scrollToSection('portfolio'); }}>Портфолио</a>
             <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>Обо мне</a>
             <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Контакты</a>
-            <button className="converter-toggle-btn" onClick={() => setConverterOpen(!converterOpen)}>
-              💱 Конвертер валют
-            </button>
           </nav>
         </div>
       </header>
-
-      {/* Конвертер валют */}
-      <div className={`currency-converter ${converterOpen ? 'open' : ''}`}>
-        <div className="converter-header">
-          <h3>Конвертер валют</h3>
-          <button className="close-converter" onClick={() => setConverterOpen(false)}>×</button>
-        </div>
-        <div className="converter-content">
-          <p className="converter-subtitle">Узнайте стоимость услуг в вашей валюте</p>
-          
-          <div className="converter-inputs">
-            <div className="input-group">
-              <label>Сумма в тенге (KZT):</label>
-              <input 
-                type="number" 
-                value={tengeAmount} 
-                onChange={handleTengeChange}
-                min="0"
-                className="tenge-input"
-              />
-            </div>
-            
-            <div className="currency-selector">
-              <label>Выберите валюту:</label>
-              <div className="currency-buttons">
-                <button 
-                  className={`currency-btn ${currency === 'USD' ? 'active' : ''}`}
-                  onClick={() => setCurrency('USD')}
-                >
-                  USD ($)
-                </button>
-                <button 
-                  className={`currency-btn ${currency === 'EUR' ? 'active' : ''}`}
-                  onClick={() => setCurrency('EUR')}
-                >
-                  EUR (€)
-                </button>
-                <button 
-                  className={`currency-btn ${currency === 'RUB' ? 'active' : ''}`}
-                  onClick={() => setCurrency('RUB')}
-                >
-                  RUB (₽)
-                </button>
-                <button 
-                  className={`currency-btn ${currency === 'UAH' ? 'active' : ''}`}
-                  onClick={() => setCurrency('UAH')}
-                >
-                  UAH (₴)
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <div className="conversion-result">
-            <div className="result-main">
-              <span className="tenge-amount">{tengeAmount.toLocaleString()} KZT</span>
-              <span className="conversion-arrow">→</span>
-              <span className="converted-amount">
-                {convertedAmount[currency]} {currency}
-              </span>
-            </div>
-            
-            <div className="all-currencies">
-              <p className="all-currencies-title">Другие валюты:</p>
-              <div className="currency-grid">
-                <div className="currency-item">
-                  <span className="currency-code">USD</span>
-                  <span className="currency-value">${convertedAmount.USD}</span>
-                </div>
-                <div className="currency-item">
-                  <span className="currency-code">EUR</span>
-                  <span className="currency-value">€{convertedAmount.EUR}</span>
-                </div>
-                <div className="currency-item">
-                  <span className="currency-code">RUB</span>
-                  <span className="currency-value">₽{convertedAmount.RUB}</span>
-                </div>
-                <div className="currency-item">
-                  <span className="currency-code">UAH</span>
-                  <span className="currency-value">₴{convertedAmount.UAH}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="service-prices-converter">
-            <h4>Быстрый выбор услуги:</h4>
-            <div className="service-buttons">
-              {services.map(service => (
-                <button 
-                  key={service.id}
-                  className="service-price-btn"
-                  onClick={() => handleServiceClick(service.id)}
-                >
-                  {service.shortTitle} - {service.price}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <div className="disclaimer">
-            <small>*Курсы валют приблизительные. Актуальные курсы уточняйте у банков.</small>
-          </div>
-        </div>
-      </div>
 
       {/* Основной контент */}
       <main>
@@ -236,9 +124,7 @@ function App() {
               <p className="subtitle">Создаю современные, быстрые и адаптивные веб-сайты, которые привлекают клиентов и способствуют развитию бизнеса.</p>
               <div className="hero-buttons">
                 <a href="#contact" className="btn-primary" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Обсудить проект</a>
-                <button className="btn-secondary" onClick={() => setConverterOpen(true)}>
-                  💱 Конвертировать цены
-                </button>
+                <a href="#services" className="btn-secondary" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Посмотреть услуги</a>
               </div>
             </div>
             <div className="hero-image">
@@ -263,8 +149,8 @@ function App() {
                   onClick={() => handleServiceClick(service.id)}
                 >
                   <div className="service-tab-content">
-                    <span className="service-title">{service.shortTitle}</span>
-                    <span className="service-price">{service.price}</span>
+                    <span className="service-title">{service.title.split(' ')[0]}</span>
+                    <span className="service-price">{formatPrice(service.basePrice, 'KZT')}</span>
                   </div>
                 </button>
               ))}
@@ -274,11 +160,39 @@ function App() {
               <div className="service-info">
                 <h3>{services[activeService].title}</h3>
                 <p className="service-description">{services[activeService].description}</p>
+                
                 <div className="price-section">
-                  <div className="price-tag">{services[activeService].price}</div>
-                  <button className="convert-price-btn" onClick={() => setConverterOpen(true)}>
-                    💱 Конвертировать
-                  </button>
+                  <div className="price-display">
+                    <div className="price-main">
+                      {formatPrice(services[activeService].basePrice, currency)}
+                    </div>
+                    <div className="currency-selector-small">
+                      <button 
+                        className={`currency-option ${currency === 'KZT' ? 'active' : ''}`}
+                        onClick={() => setCurrency('KZT')}
+                      >
+                        KZT
+                      </button>
+                      <button 
+                        className={`currency-option ${currency === 'USD' ? 'active' : ''}`}
+                        onClick={() => setCurrency('USD')}
+                      >
+                        USD
+                      </button>
+                      <button 
+                        className={`currency-option ${currency === 'EUR' ? 'active' : ''}`}
+                        onClick={() => setCurrency('EUR')}
+                      >
+                        EUR
+                      </button>
+                      <button 
+                        className={`currency-option ${currency === 'RUB' ? 'active' : ''}`}
+                        onClick={() => setCurrency('RUB')}
+                      >
+                        RUB
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 
                 <h4 className="features-title">Что входит:</h4>
@@ -304,9 +218,7 @@ function App() {
                     <p>React, JavaScript, CSS3, HTML5, адаптивная верстка</p>
                     
                     <div className="currency-hint">
-                      <button onClick={() => setConverterOpen(true)}>
-                        💱 Узнать стоимость в {currency}
-                      </button>
+                      <span>Цена в {currency}: {formatPrice(services[activeService].basePrice, currency)}</span>
                     </div>
                   </div>
                 </div>
@@ -415,10 +327,7 @@ function App() {
                 
                 <div className="currency-note">
                   <h4>Международные клиенты</h4>
-                  <p>Принимаю оплату в тенге (KZT), долларах (USD), евро (EUR) и рублях (RUB).</p>
-                  <button className="currency-converter-link" onClick={() => setConverterOpen(true)}>
-                    Открыть конвертер валют →
-                  </button>
+                  <p>Принимаю оплату в разных валютах. Используйте переключатель валют в разделе услуг.</p>
                 </div>
               </div>
               
@@ -449,13 +358,12 @@ function App() {
                     </div>
                     
                     <div className="form-group">
-                      <label htmlFor="budget">Бюджет (в KZT)</label>
+                      <label htmlFor="budget">Бюджет</label>
                       <input 
                         type="number" 
                         id="budget" 
-                        placeholder="20000" 
+                        placeholder="20000"
                         min="0"
-                        onChange={(e) => setTengeAmount(parseInt(e.target.value) || 0)}
                       />
                     </div>
                   </div>
@@ -480,9 +388,6 @@ function App() {
             <div className="logo-footer">
               <span className="logo-text">WebDev Pro</span>
               <p>Профессиональная разработка сайтов</p>
-              <button className="footer-converter-btn" onClick={() => setConverterOpen(true)}>
-                💱 Конвертер валют
-              </button>
             </div>
             
             <div className="footer-links">
@@ -507,7 +412,7 @@ function App() {
           
           <div className="footer-bottom">
             <p>&copy; {new Date().getFullYear()} WebDev Pro. Все права защищены.</p>
-            <p className="currency-disclaimer">Курсы валют обновляются ежедневно</p>
+            <p className="currency-disclaimer">Курсы валют: USD ≈ 0.0021, EUR ≈ 0.0019, RUB ≈ 0.18</p>
           </div>
         </div>
       </footer>
