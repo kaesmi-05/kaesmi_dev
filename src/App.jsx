@@ -1,0 +1,518 @@
+import React, { useState, useEffect } from 'react';
+import './App.css';
+
+function App() {
+  const [activeService, setActiveService] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [converterOpen, setConverterOpen] = useState(false);
+  const [tengeAmount, setTengeAmount] = useState(20000);
+  const [convertedAmount, setConvertedAmount] = useState({});
+  const [currency, setCurrency] = useState('USD');
+  const [exchangeRates, setExchangeRates] = useState({
+    USD: 0.0021,
+    EUR: 0.0019,
+    RUB: 0.18,
+    UAH: 0.077
+  });
+
+  const services = [
+    {
+      id: 0,
+      title: "Одностраничный сайт (Landing Page)",
+      shortTitle: "Landing Page",
+      description: "Современный одностраничный сайт для продвижения продукта или услуги. Оптимизирован для конверсии, адаптирован под все устройства.",
+      price: "20 000 тг",
+      priceValue: 20000,
+      features: ["Адаптивный дизайн", "Оптимизация под SEO", "Форма обратной связи", "Интеграция с соцсетями", "Аналитика посещений"]
+    },
+    {
+      id: 1,
+      title: "Сайт-визитка",
+      shortTitle: "Сайт-визитка",
+      description: "Классический сайт-визитка для представления вас или вашего бизнеса в интернете. Несколько страниц с основной информацией.",
+      price: "20 000 тг",
+      priceValue: 20000,
+      features: ["До 5 страниц", "Адаптивный дизайн", "Галерея работ", "Контакты и карта", "Базовое SEO"]
+    },
+    {
+      id: 2,
+      title: "Корпоративный сайт",
+      shortTitle: "Корпоративный",
+      description: "Полнофункциональный сайт для компании с системой управления контентом, новостным разделом и каталогом продукции.",
+      price: "от 100 000 тг",
+      priceValue: 100000,
+      features: ["Индивидуальный дизайн", "Система управления (CMS)", "Многостраничная структура", "Новостной блог", "Админ-панель"]
+    },
+    {
+      id: 3,
+      title: "Интернет-магазин",
+      shortTitle: "Интернет-магазин",
+      description: "Полноценная платформа для онлайн-продаж с каталогом товаров, корзиной, системой оплаты и личным кабинетом покупателя.",
+      price: "от 100 000 тг",
+      priceValue: 100000,
+      features: ["Каталог товаров", "Корзина и оформление заказа", "Система оплаты", "Личный кабинет", "Управление заказами"]
+    }
+  ];
+
+  const portfolioItems = [
+    { id: 1, title: "Сайт для кофейни", category: "Landing Page", image: "coffee.jpg" },
+    { id: 2, title: "Интернет-магазин одежды", category: "E-commerce", image: "fashion.jpg" },
+    { id: 3, title: "Корпоративный портал", category: "Корпоративный", image: "corporate.jpg" },
+    { id: 4, title: "Сайт-портфолио дизайнера", category: "Сайт-визитка", image: "portfolio.jpg" },
+    { id: 5, title: "Сайт для турагентства", category: "Корпоративный", image: "travel.jpg" },
+    { id: 6, title: "Лендинг для стартапа", category: "Landing Page", image: "startup.jpg" },
+  ];
+
+  // Конвертация валют
+  useEffect(() => {
+    const converted = {};
+    Object.keys(exchangeRates).forEach(key => {
+      converted[key] = (tengeAmount * exchangeRates[key]).toFixed(2);
+    });
+    setConvertedAmount(converted);
+  }, [tengeAmount, exchangeRates]);
+
+  const handleTengeChange = (e) => {
+    const value = parseInt(e.target.value) || 0;
+    setTengeAmount(value);
+  };
+
+  const handleServiceClick = (id) => {
+    setActiveService(id);
+    setTengeAmount(services[id].priceValue);
+  };
+
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    alert("Спасибо за вашу заявку! Я свяжусь с вами в ближайшее время.");
+    e.target.reset();
+  };
+
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+      setMenuOpen(false);
+    }
+  };
+
+  return (
+    <div className="App">
+      {/* Шапка сайта */}
+      <header className="header">
+        <div className="container header-container">
+          <div className="logo">
+            <span className="logo-text">WebDev Pro</span>
+          </div>
+          
+          <button className="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? '✕' : '☰'}
+          </button>
+          
+          <nav className={`nav ${menuOpen ? 'open' : ''}`}>
+            <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Услуги</a>
+            <a href="#portfolio" onClick={(e) => { e.preventDefault(); scrollToSection('portfolio'); }}>Портфолио</a>
+            <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>Обо мне</a>
+            <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Контакты</a>
+            <button className="converter-toggle-btn" onClick={() => setConverterOpen(!converterOpen)}>
+              💱 Конвертер валют
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      {/* Конвертер валют */}
+      <div className={`currency-converter ${converterOpen ? 'open' : ''}`}>
+        <div className="converter-header">
+          <h3>Конвертер валют</h3>
+          <button className="close-converter" onClick={() => setConverterOpen(false)}>×</button>
+        </div>
+        <div className="converter-content">
+          <p className="converter-subtitle">Узнайте стоимость услуг в вашей валюте</p>
+          
+          <div className="converter-inputs">
+            <div className="input-group">
+              <label>Сумма в тенге (KZT):</label>
+              <input 
+                type="number" 
+                value={tengeAmount} 
+                onChange={handleTengeChange}
+                min="0"
+                className="tenge-input"
+              />
+            </div>
+            
+            <div className="currency-selector">
+              <label>Выберите валюту:</label>
+              <div className="currency-buttons">
+                <button 
+                  className={`currency-btn ${currency === 'USD' ? 'active' : ''}`}
+                  onClick={() => setCurrency('USD')}
+                >
+                  USD ($)
+                </button>
+                <button 
+                  className={`currency-btn ${currency === 'EUR' ? 'active' : ''}`}
+                  onClick={() => setCurrency('EUR')}
+                >
+                  EUR (€)
+                </button>
+                <button 
+                  className={`currency-btn ${currency === 'RUB' ? 'active' : ''}`}
+                  onClick={() => setCurrency('RUB')}
+                >
+                  RUB (₽)
+                </button>
+                <button 
+                  className={`currency-btn ${currency === 'UAH' ? 'active' : ''}`}
+                  onClick={() => setCurrency('UAH')}
+                >
+                  UAH (₴)
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="conversion-result">
+            <div className="result-main">
+              <span className="tenge-amount">{tengeAmount.toLocaleString()} KZT</span>
+              <span className="conversion-arrow">→</span>
+              <span className="converted-amount">
+                {convertedAmount[currency]} {currency}
+              </span>
+            </div>
+            
+            <div className="all-currencies">
+              <p className="all-currencies-title">Другие валюты:</p>
+              <div className="currency-grid">
+                <div className="currency-item">
+                  <span className="currency-code">USD</span>
+                  <span className="currency-value">${convertedAmount.USD}</span>
+                </div>
+                <div className="currency-item">
+                  <span className="currency-code">EUR</span>
+                  <span className="currency-value">€{convertedAmount.EUR}</span>
+                </div>
+                <div className="currency-item">
+                  <span className="currency-code">RUB</span>
+                  <span className="currency-value">₽{convertedAmount.RUB}</span>
+                </div>
+                <div className="currency-item">
+                  <span className="currency-code">UAH</span>
+                  <span className="currency-value">₴{convertedAmount.UAH}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="service-prices-converter">
+            <h4>Быстрый выбор услуги:</h4>
+            <div className="service-buttons">
+              {services.map(service => (
+                <button 
+                  key={service.id}
+                  className="service-price-btn"
+                  onClick={() => handleServiceClick(service.id)}
+                >
+                  {service.shortTitle} - {service.price}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="disclaimer">
+            <small>*Курсы валют приблизительные. Актуальные курсы уточняйте у банков.</small>
+          </div>
+        </div>
+      </div>
+
+      {/* Основной контент */}
+      <main>
+        {/* Герой-секция */}
+        <section className="hero">
+          <div className="container hero-container">
+            <div className="hero-content">
+              <h1>Профессиональная разработка сайтов любой сложности</h1>
+              <p className="subtitle">Создаю современные, быстрые и адаптивные веб-сайты, которые привлекают клиентов и способствуют развитию бизнеса.</p>
+              <div className="hero-buttons">
+                <a href="#contact" className="btn-primary" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Обсудить проект</a>
+                <button className="btn-secondary" onClick={() => setConverterOpen(true)}>
+                  💱 Конвертировать цены
+                </button>
+              </div>
+            </div>
+            <div className="hero-image">
+              <div className="code-snippet">
+                <pre>{`<WebDeveloper>\n  <Skills>\n    <Skill>React</Skill>\n    <Skill>JavaScript</Skill>\n    <Skill>CSS/HTML</Skill>\n    <Skill>UI/UX Design</Skill>\n  </Skills>\n</WebDeveloper>`}</pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Секция услуг */}
+        <section id="services" className="services">
+          <div className="container services-container">
+            <h2 className="section-title">Мои услуги</h2>
+            <p className="section-subtitle">Выберите подходящий вариант или закажите индивидуальный проект</p>
+            
+            <div className="services-tabs">
+              {services.map(service => (
+                <button 
+                  key={service.id}
+                  className={`service-tab ${activeService === service.id ? 'active' : ''}`}
+                  onClick={() => handleServiceClick(service.id)}
+                >
+                  <div className="service-tab-content">
+                    <span className="service-title">{service.shortTitle}</span>
+                    <span className="service-price">{service.price}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+            
+            <div className="service-details">
+              <div className="service-info">
+                <h3>{services[activeService].title}</h3>
+                <p className="service-description">{services[activeService].description}</p>
+                <div className="price-section">
+                  <div className="price-tag">{services[activeService].price}</div>
+                  <button className="convert-price-btn" onClick={() => setConverterOpen(true)}>
+                    💱 Конвертировать
+                  </button>
+                </div>
+                
+                <h4 className="features-title">Что входит:</h4>
+                <ul className="features-list">
+                  {services[activeService].features.map((feature, index) => (
+                    <li key={index}>{feature}</li>
+                  ))}
+                </ul>
+                
+                <a href="#contact" className="btn-secondary order-btn" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Заказать эту услугу</a>
+              </div>
+              
+              <div className="service-illustration">
+                <div className="illustration-placeholder">
+                  <div className="device-mockup">
+                    <div className="device-screen"></div>
+                  </div>
+                  <div className="illustration-text">
+                    <h4>Срок разработки:</h4>
+                    <p>{activeService <= 1 ? "3-5 рабочих дней" : "от 10 рабочих дней"}</p>
+                    
+                    <h4>Технологии:</h4>
+                    <p>React, JavaScript, CSS3, HTML5, адаптивная верстка</p>
+                    
+                    <div className="currency-hint">
+                      <button onClick={() => setConverterOpen(true)}>
+                        💱 Узнать стоимость в {currency}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Секция портфолио */}
+        <section id="portfolio" className="portfolio">
+          <div className="container portfolio-container">
+            <h2 className="section-title">Мои работы</h2>
+            <p className="section-subtitle">Примеры реализованных проектов</p>
+            
+            <div className="portfolio-grid">
+              {portfolioItems.map(item => (
+                <div key={item.id} className="portfolio-item">
+                  <div className="portfolio-image">
+                    <div className={`image-placeholder ${item.category === 'Landing Page' ? 'landing' : 
+                                    item.category === 'E-commerce' ? 'ecommerce' : 
+                                    item.category === 'Корпоративный' ? 'corporate' : 'visiting'}`}>
+                      <div className="image-overlay">{item.title}</div>
+                    </div>
+                  </div>
+                  <div className="portfolio-info">
+                    <h4>{item.title}</h4>
+                    <span className="portfolio-category">{item.category}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Секция "Обо мне" */}
+        <section id="about" className="about">
+          <div className="container about-container">
+            <div className="about-content">
+              <h2 className="section-title">Обо мне</h2>
+              <p className="about-description">Я профессиональный веб-разработчик с 5-летним опытом создания сайтов различной сложности. Специализируюсь на разработке современных, адаптивных и высокопроизводительных веб-приложений.</p>
+              
+              <div className="skills">
+                <div className="skill">
+                  <h4>Frontend разработка</h4>
+                  <p>React, JavaScript, TypeScript, Vue.js, HTML5, CSS3, SASS</p>
+                </div>
+                <div className="skill">
+                  <h4>Дизайн и UX/UI</h4>
+                  <p>Адаптивный дизайн, Figma, Adobe XD, пользовательские интерфейсы</p>
+                </div>
+                <div className="skill">
+                  <h4>Дополнительные технологии</h4>
+                  <p>Git, Webpack, REST API, Node.js, MongoDB, Firebase</p>
+                </div>
+              </div>
+              
+              <div className="stats">
+                <div className="stat">
+                  <div className="stat-number">50+</div>
+                  <div className="stat-text">Реализованных проектов</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-number">100%</div>
+                  <div className="stat-text">Довольных клиентов</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-number">5 лет</div>
+                  <div className="stat-text">Опыта разработки</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Секция контактов */}
+        <section id="contact" className="contact">
+          <div className="container contact-container">
+            <h2 className="section-title">Свяжитесь со мной</h2>
+            <p className="section-subtitle">Обсудим ваш проект и найдем оптимальное решение</p>
+            
+            <div className="contact-content">
+              <div className="contact-info">
+                <h3>Контактная информация</h3>
+                <div className="contact-item">
+                  <div className="contact-icon">📧</div>
+                  <div>
+                    <h4>Email</h4>
+                    <p>hello@webdevpro.kz</p>
+                  </div>
+                </div>
+                <div className="contact-item">
+                  <div className="contact-icon">📱</div>
+                  <div>
+                    <h4>Телефон</h4>
+                    <p>+7 (777) 123-45-67</p>
+                  </div>
+                </div>
+                <div className="contact-item">
+                  <div className="contact-icon">📍</div>
+                  <div>
+                    <h4>Локация</h4>
+                    <p>Алматы, Казахстан</p>
+                    <p className="location-subtext">Работаю с клиентами по всему миру</p>
+                  </div>
+                </div>
+                
+                <div className="currency-note">
+                  <h4>Международные клиенты</h4>
+                  <p>Принимаю оплату в тенге (KZT), долларах (USD), евро (EUR) и рублях (RUB).</p>
+                  <button className="currency-converter-link" onClick={() => setConverterOpen(true)}>
+                    Открыть конвертер валют →
+                  </button>
+                </div>
+              </div>
+              
+              <div className="contact-form">
+                <form onSubmit={handleContactSubmit}>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="name">Ваше имя</label>
+                      <input type="text" id="name" required placeholder="Иван Иванов" />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="email">Email</label>
+                      <input type="email" id="email" required placeholder="example@mail.com" />
+                    </div>
+                  </div>
+                  
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="service">Интересующая услуга</label>
+                      <select id="service">
+                        <option value="">Выберите услугу</option>
+                        <option value="landing">Одностраничный сайт</option>
+                        <option value="visiting">Сайт-визитка</option>
+                        <option value="corporate">Корпоративный сайт</option>
+                        <option value="ecommerce">Интернет-магазин</option>
+                      </select>
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="budget">Бюджет (в KZT)</label>
+                      <input 
+                        type="number" 
+                        id="budget" 
+                        placeholder="20000" 
+                        min="0"
+                        onChange={(e) => setTengeAmount(parseInt(e.target.value) || 0)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="message">Опишите ваш проект</label>
+                    <textarea id="message" rows="5" placeholder="Расскажите о вашем проекте, целях и пожеланиях..."></textarea>
+                  </div>
+                  
+                  <button type="submit" className="btn-primary submit-btn">Отправить заявку</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Футер */}
+      <footer className="footer">
+        <div className="container footer-container">
+          <div className="footer-content">
+            <div className="logo-footer">
+              <span className="logo-text">WebDev Pro</span>
+              <p>Профессиональная разработка сайтов</p>
+              <button className="footer-converter-btn" onClick={() => setConverterOpen(true)}>
+                💱 Конвертер валют
+              </button>
+            </div>
+            
+            <div className="footer-links">
+              <h4>Услуги</h4>
+              <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Одностраничный сайт</a>
+              <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Сайт-визитка</a>
+              <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Корпоративный сайт</a>
+              <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Интернет-магазин</a>
+            </div>
+            
+            <div className="footer-contact">
+              <h4>Контакты</h4>
+              <p>hello@webdevpro.kz</p>
+              <p>+7 (777) 123-45-67</p>
+              <div className="social-links">
+                <a href="#" className="social-link">Instagram</a>
+                <a href="#" className="social-link">LinkedIn</a>
+                <a href="#" className="social-link">GitHub</a>
+              </div>
+            </div>
+          </div>
+          
+          <div className="footer-bottom">
+            <p>&copy; {new Date().getFullYear()} WebDev Pro. Все права защищены.</p>
+            <p className="currency-disclaimer">Курсы валют обновляются ежедневно</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;
