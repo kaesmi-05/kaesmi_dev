@@ -6,6 +6,7 @@ function App() {
   const [activeService, setActiveService] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currency, setCurrency] = useState('KZT');
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [exchangeRates, setExchangeRates] = useState({
     KZT: 1,
     USD: 0.0020,
@@ -104,16 +105,17 @@ function App() {
   const handleContactSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.message) {
-      alert("Пожалуйста, заполните обязательные поля: имя, email и описание проекта");
+    if (!formData.name || !formData.email || !formData.phone || !formData.message) {
+      alert("Пожалуйста, заполните обязательные поля: имя, email, номер телефона и описание проекта");
       return;
     }
 
     const text = `
-<b>📩 Новая заявка с сайта WebDev Pro</b>
+<b>📩 Новая заявка с сайта</b>
 
 <b>👤 Имя:</b> ${formData.name}
 <b>📧 Email:</b> ${formData.email}
+<b>📞 Номер телефона:</b> ${formData.phone}
 <b>💼 Услуга:</b> ${formData.service || "Не указана"}
 <b>💰 Бюджет:</b> ${formData.budget || "Не указан"} KZT
 
@@ -410,7 +412,7 @@ ${formData.message}
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="phone">Phone Number</label>
+                      <label htmlFor="phone">Номер телефона</label>
 
                       <IMaskInput
                         mask="+{7} (000) 000-00-00"
@@ -474,6 +476,7 @@ ${formData.message}
                   </div>
 
                   <button type="submit" className="btn-primary submit-btn">Отправить заявку</button>
+                  
                 </form>
               </div>
             </div>
